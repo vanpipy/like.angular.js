@@ -4,7 +4,9 @@
   "description": "LikeAngularJS",
   "main": "none",
   "scripts": {
-    "test": "test"
+    "test": "test",
+    "build": "npm run gulp",
+    "gulp": "node --max_old_space_size=4096 node_modules/gulp/bin/gulp.js"
   },
   "repository": {
     "type": "git",
@@ -19,5 +21,9 @@
   "bugs": {
     "url": "https://github.com/vanpipy/LikeAngularJS/issues"
   },
-  "homepage": "https://github.com/vanpipy/LikeAngularJS#readme"
+  "homepage": "https://github.com/vanpipy/LikeAngularJS#readme",
+  "dependencies": {
+    "compose-parallel": "^1.0.2"
+  },
+  "devDependencies": {}
 }
