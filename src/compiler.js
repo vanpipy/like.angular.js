@@ -5,20 +5,23 @@
      * @name Compiler
      * @param template {String}
      * @param attrs {Scope}
+     *
+     * @Description
+     * Tha Compiler do things about compile only.
+     * Raw element > LiteNode > ScopeBindedNode
      */
-    function Compiler (template, attrs) {
-        this.template = template;
-        this.scope = attrs;
+    function Compiler () {
 
-        return this.compile;
     }
 
-    Compiler.prototype.compile = function (scope) {
-        if (LA.isUndefined(this.scope)) {
-            this.scope = scope;
+    Compiler.prototype.compile = function (element) {
+        if (LA.isDefined(element)) {
+
         }
 
+        return function bindToScope() {
 
+        };
     };
 
     LA.compiler = Compiler;
