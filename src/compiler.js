@@ -15,7 +15,7 @@
     }
 
     Compiler.prototype.compile = function (element) {
-        if (LA.isDefined(element)) {
+        if (LA.isLiteNode(element)) {
 
         }
 
@@ -24,5 +24,5 @@
         };
     };
 
-    LA.compiler = Compiler;
+    w.compiler = new Compiler();
 })(window, window.LA);

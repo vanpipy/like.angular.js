@@ -16,6 +16,10 @@
         return !Like.isNull(input) && !Like.isUndefined(input);
     };
 
+    Like.isLiteNode = function (node) {
+        return node && node.nodeName || node instanceof LiteNode;
+    };
+
     function defineTypeChecker (typeString) {
         return function (input) {
             return Object.prototype.toString.call(input) == '[object '+ typeString +']';
