@@ -5,12 +5,18 @@
     <title>LikeAngularJS</title>
 </head>
 <body>
+
+    <div id="main" main-role ng-controller="testCtrl" ng-click="log(test)">
+        <input type="text" ng-model="test" >
+
+        <mark-up></mark-up>
+    </div>
     
     <script type="text/javascript" src="../lib/compose-parallel.js"></script>
     <script type="text/javascript" src="../src/like.js"></script>
     <script type="text/javascript" src="../src/lite.js"></script>
-    <script type="text/javascript" src="../src/provider.js"></script>
     <script type="text/javascript" src="../src/scope.js"></script>
+    <script type="text/javascript" src="../src/provider.js"></script>
     <script type="text/javascript" src="../src/compiler.js"></script>
 </body>
 </html>

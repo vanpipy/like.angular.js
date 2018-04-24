@@ -2,18 +2,21 @@
 (function(w, _$) {
     'use strict';
 
-    function LikeAngularjs() {
+    function Like() {
 
     }
 
-    var Like = LikeAngularjs;
-
+    var map = _$.map;
     var compose = _$.compose;
     var curry = _$.curry;
 
     var defineTypeChecker = curry(function(typeString, input) {
         return Object.prototype.toString.call(input) == '[object '+ typeString +']';
     });
+
+    Like.map = map;
+    Like.compose = compose;
+    Like.curry = curry;
 
     Like.isString = defineTypeChecker('String');
     Like.isFunction = defineTypeChecker('Function');
@@ -25,9 +28,13 @@
         return !Like.isNull(input) && !Like.isUndefined(input);
     };
 
-    Like.isLiteNode = function (node) {
-        return node && node.nodeName || node instanceof LiteNode;
+    Like.providers = [];
+
+    Like.providerPrefix = {
+        directive: 'D_',
+        controller: 'C_',
+        service: 'S_'
     };
 
-    w.LA = LikeAngularjs;
+    w.LA = Like;
 })(window, window._$);
