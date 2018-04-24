@@ -14,7 +14,7 @@
         if (LA.isDefined(key)) {
 
             if (LA.isDefined(value)) {
-                return this.node.setAttribute(key);
+                return this.node.setAttribute(key, value);
             }
             
             return this.node.getAttribute(key);

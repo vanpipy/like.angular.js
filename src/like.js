@@ -1,10 +1,19 @@
 
-(function(w) {
+(function(w, _$) {
     'use strict';
 
-    LikeAngularjs = function () {
+    function LikeAngularjs() {
 
     }
+
+    var Like = LikeAngularjs;
+
+    var compose = _$.compose;
+    var curry = _$.curry;
+
+    var defineTypeChecker = curry(function(typeString, input) {
+        return Object.prototype.toString.call(input) == '[object '+ typeString +']';
+    });
 
     Like.isString = defineTypeChecker('String');
     Like.isFunction = defineTypeChecker('Function');
@@ -20,11 +29,5 @@
         return node && node.nodeName || node instanceof LiteNode;
     };
 
-    function defineTypeChecker (typeString) {
-        return function (input) {
-            return Object.prototype.toString.call(input) == '[object '+ typeString +']';
-        }
-    }
-
     w.LA = LikeAngularjs;
-})(window);
+})(window, window._$);

@@ -7,5 +7,5 @@
     }
 
 
-    like.provider = new Provider();
+    w.provider = new Provider();
 })(window, window.LA);
