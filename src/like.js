@@ -6,9 +6,9 @@
 
     }
 
-    var map = _$.map;
-    var compose = _$.compose;
     var curry = _$.curry;
+    var compose = _$.compose;
+    var map = curry(_$.map);
 
     var defineTypeChecker = curry(function(typeString, input) {
         return Object.prototype.toString.call(input) == '[object '+ typeString +']';
@@ -35,6 +35,10 @@
         controller: 'C_',
         service: 'S_'
     };
+
+    Like.curry = curry;
+    Like.compose = compose;
+    Like.map = map;
 
     w.LA = Like;
 })(window, window._$);

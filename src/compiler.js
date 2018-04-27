@@ -1,30 +1,43 @@
 'use strict';
 
-(function(w, LA) {
+(function(w, LA, Provider) {
     function Template (LiteNodesArray, provider) {
         this.nodes = LiteNodesArray || [];
         this.provider = provider || [];
+        this.markups = [];
     }
 
-    Template.prototype.getMark = function () {
-        var i = 0;
+    Template.prototype.init = function () {
+        for (var i = 0, l = this.nodes.length; i < l; i++) {
+            var node = new Lite(this.nodes[i]);
+            var markups = node.getMarks();
+            var markupLinked;
 
-        while (i < this.nodes.length) {
-
-
-            i++;
+            if (markups && markups.length) {
+                for (var k = 0, len = markups.length; k < len; k++) {
+                    if (markupLinked = this.provider.get(markups[k])) {
+                        this.markups.push([ node, markupLinked ]);
+                    }
+                }
+            }
         }
+
+        return this;
     };
 
-    Template.prototype.markup = function (mark) {
+    Template.prototype.extractMark = function (scope) {
+        var markups = this.markups;
 
+        //TODO: Make binded function running.
     };
 
+    Template.prototype.activateByScope = function (scope) {
+        //TODO: Dirty checker and activate scope again and again.
+    };
 
     /*
      * @name Compiler
-     * @param template {String}
-     * @param attrs {Scope}
+     * @param provider {EnvironmentForCompiler}
      *
      * @Description
      * Tha Compiler do things about compile only.
@@ -32,28 +45,25 @@
      */
     function Compiler (provider) {
         this.provider = provider;
-        //TODO: Make an angularjs template engine.
-        //this.template
     }
 
     Compiler.prototype.compile = function (element) {
-        element = this.templatize(new Lite(element));
+        var _template = this.templatize(new Lite(element));
 
-        return function() {
-
+        return function(scope) {
+            _template.extractMark(scope);
         };
     };
 
     Compiler.prototype.templatize = function (LiteNode) {
         var children = LiteNode.childNodes();
-        var provider = this.provider;
-        var template = new Template();
+        var template = new Template(children, this.provider);
 
-        var markups = template.getMark();
+        return template.init();
     };
 
-    w.compiler = new Compiler(LA.providers);
-})(window, window.LA, window.LA.provider);
+    w.compiler = new Compiler(Provider);
+})(window, window.LA, window.provider);
 
 provider.add('directive', 'mainRole', function () {
     return {
@@ -93,7 +103,7 @@ provider.add('directive', 'ngModel', function () {
 
 provider.add('directive', 'markUp', function () {
     return {
-        restrict: 'A',
+        restrict: 'E',
         link: function (scope, attr, element) {
 
         }

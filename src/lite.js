@@ -28,10 +28,11 @@
         return childNodesIter(this[0].childNodes, []);
     };
 
-    LiteNode.prototype.markups = function () {
-        return [this[0].nodeName.toLowerCase()].concat(LA.map(function(a) {
-            return a.name;
-        }, this[0].attributes));
+    var filterName = LA.map(function(a) { return a.name; });
+    LiteNode.prototype.getMarks = function () {
+        if (this[0].attributes) {
+            return [this[0].nodeName.toLowerCase()].concat(filterName(this[0].attributes));
+        }
     };
 
     LiteNode.prototype.bind = function (eventName, fn) {
@@ -84,4 +85,4 @@
     };
 
     w.Lite = LiteNode;
-})(window, window.LA);
+})(window, window.LA, window._$);

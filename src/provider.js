@@ -10,6 +10,7 @@
 
     Provider.prototype.add = function (type, name, fn) {
         this.providers.push({
+            type: type,
             name: this.prefixs[type] +  name,
             callback: fn
         });
