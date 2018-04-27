@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" ng-app="like">
 <head>
     <meta charset="UTF-8">
     <title>LikeAngularJS</title>
@@ -7,9 +7,9 @@
 <body>
 
     <div id="main" main-role ng-controller="testCtrl" ng-click="log(test)">
-        <input type="text" ng-model="test" >
-
-        <mark-up></mark-up>
+        <input type="text" ng-model="whoareyou" >
+        <p>{{ whoareyou }}</p>
+        <mark-up>try to mark up</mark-up>
     </div>
     
     <script type="text/javascript" src="../lib/compose-parallel.js"></script>

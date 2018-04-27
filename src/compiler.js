@@ -1,6 +1,26 @@
 'use strict';
 
 (function(w, LA) {
+    function Template (LiteNodesArray, provider) {
+        this.nodes = LiteNodesArray || [];
+        this.provider = provider || [];
+    }
+
+    Template.prototype.getMark = function () {
+        var i = 0;
+
+        while (i < this.nodes.length) {
+
+
+            i++;
+        }
+    };
+
+    Template.prototype.markup = function (mark) {
+
+    };
+
+
     /*
      * @name Compiler
      * @param template {String}
@@ -10,8 +30,8 @@
      * Tha Compiler do things about compile only.
      * Raw element > LiteNode > ScopeBindedNode
      */
-    function Compiler (providers) {
-        this.providers = providers;
+    function Compiler (provider) {
+        this.provider = provider;
         //TODO: Make an angularjs template engine.
         //this.template
     }
@@ -26,23 +46,14 @@
 
     Compiler.prototype.templatize = function (LiteNode) {
         var children = LiteNode.childNodes();
-        var validMarkup;
+        var provider = this.provider;
+        var template = new Template();
 
-        for (var i = 0, length = children.length; i < length; i++) {
-            var attrsName = children[i].markups();
-
-            for (var j = 0, l = attrsName.length; j < l; j++) {
-                validMarkup = provider.get(attrsName[j]);
-
-                if (validMarkup) {
-                    //TODO: Bind markup to template.
-                };
-            }
-        }
+        var markups = template.getMark();
     };
 
     w.compiler = new Compiler(LA.providers);
-})(window, window.LA);
+})(window, window.LA, window.LA.provider);
 
 provider.add('directive', 'mainRole', function () {
     return {

@@ -19,13 +19,13 @@
             if (LA.isDefined(value)) {
                 return this.node.setAttribute(key, value);
             }
-            
+
             return this.node.getAttribute(key);
         }
     };
 
     LiteNode.prototype.childNodes = function () {
-        return childNodesIter(this[0]);
+        return childNodesIter(this[0].childNodes, []);
     };
 
     LiteNode.prototype.markups = function () {
@@ -38,16 +38,41 @@
         this[0].addEventListener(eventName, fn, false);
     };
 
-    function childNodesIter (root) {
-        var node = Array.prototype.filter.call(root.getElementsByTagName('*'), getDOMNode);
+    function childNodesIter (nodesArray, result) {
+        var i = 0;
+        var nextNodesArray = [];
+        var endCount = 0;
 
-        return LA.map(function(n) {
-            return new Lite(n);
-        }, node);
+        while (i < nodesArray.length) {
+            if (nodesArray[i].childNodes.length) {
+                nextNodesArray = nextNodesArray.concat(sliceDOMList(nodesArray[i].childNodes));
+            } else {
+                endCount += 1;
+            }
+
+            result.push(nodesArray[i]);
+
+            i++;
+        }
+
+        if (endCount === i) {
+            return result;
+        } else {
+            return childNodesIter(nextNodesArray, result);
+        }
+
+    }
+
+    function sliceDOMList (domList) {
+        return Array.prototype.slice.call(domList);
     }
 
     function getDOMNode (node) {
-        return node.nodeType != 3 && node.nodeName !== 'SCRIPT';
+        return node.nodeName !== 'SCRIPT';
+    }
+
+    function makeLiteNode (node) {
+        return new Lite(node);
     }
 
     function isElement (element) {
