@@ -8,10 +8,30 @@
             this.length = 1;
         }
 
+        if (LA.isString(element)) {
+            return LiteNode.prototype.create.call(null, element);
+        }
+
         if (isLiteNode(element)) {
             return element;
         }
     }
+
+    LiteNode.prototype.create = function (input) {
+        if (LA.isString(input)) {
+            var _box = document.createElement('div');
+            _box.innerHTML = input;
+
+            if (_box.childNodes.length <= 1) {
+                return new Lite(_box.childNodes[0]);
+            } else {
+                _box = undefined;
+
+                //TODO: Fix console.log to error report.
+                console.log('Multiple createing is not supported.');
+            }
+        }
+    };
 
     LiteNode.prototype.attr = function (key, value) {
         if (LA.isDefined(key)) {
@@ -28,6 +48,10 @@
         return childNodesIter(this[0].childNodes, []);
     };
 
+    LiteNode.prototype.attributes = function () {
+        return this[0].attributes;
+    };
+
     var filterName = LA.map(function(a) { return a.name; });
     LiteNode.prototype.getMarks = function () {
         if (this[0].attributes) {
@@ -37,6 +61,16 @@
 
     LiteNode.prototype.bind = function (eventName, fn) {
         this[0].addEventListener(eventName, fn, false);
+    };
+
+    LiteNode.prototype.append = function (node) {
+        if (LA.isString(node)) {
+            this[0].innerHTML = this[0].innerHTML + node;
+        } else {
+            node = new Lite(node);
+            this[0].appendChild(node[0]);
+        }
+
     };
 
     function childNodesIter (nodesArray, result) {
@@ -82,7 +116,11 @@
 
     function isLiteNode(node) {
         return node instanceof LiteNode;
-    };
+    }
+
+    function isTextNode (node) {
+        return node.nodeType == 3;
+    }
 
     w.Lite = LiteNode;
 })(window, window.LA, window._$);

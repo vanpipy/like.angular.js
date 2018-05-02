@@ -28,7 +28,21 @@
     Template.prototype.extractMark = function (scope) {
         var markups = this.markups;
 
-        //TODO: Make binded function running.
+        for (var i = 0, l = markups.length; i < l; i++) {
+            var node = markups[i][0];
+            var bindedObject = markups[i][1];
+
+            var callback = bindedObject.callback();
+            var linkRestrict = callback.restrict;
+            var linkFn = callback.link;
+
+            if (hasRestrict(linkRestrict, 'E')) {
+                w.compiler.compile(Lite(callback.template))(scope);
+                node.append(callback.template);
+            }
+
+            linkFn(scope, node.attributes(), node);
+        }
     };
 
     Template.prototype.activateByScope = function (scope) {
@@ -36,11 +50,31 @@
     };
 
     /*
+     * @param {String} type
+     * @Description the type is 'A' or 'E'. 'A' represent attribute, 'E' represent element and use template for inserted.
+     */
+    function hasRestrict (restrict, type) {
+        var i = 0;
+        var has = false;
+
+        while (i < restrict.length) {
+            if (restrict[i] == type) {
+                has = true;
+                break;
+            }
+
+            i++;
+        }
+
+        return has;
+    }
+
+    /*
      * @name Compiler
      * @param provider {EnvironmentForCompiler}
      *
      * @Description
-     * Tha Compiler do things about compile only.
+     * The Compiler do things about compile only.
      * Raw element > LiteNode > ScopeBindedNode
      */
     function Compiler (provider) {
@@ -104,10 +138,12 @@ provider.add('directive', 'ngModel', function () {
 provider.add('directive', 'markUp', function () {
     return {
         restrict: 'E',
+        template: '<h1>Hello!</h1>',
         link: function (scope, attr, element) {
 
         }
     }
 });
 
-compiler.compile(document.getElementById('main'));
+var $scope = new scope();
+compiler.compile(document.getElementById('main'))($scope);
