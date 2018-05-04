@@ -5,6 +5,7 @@
         this.nodes = LiteNodesArray || [];
         this.provider = provider || [];
         this.markups = [];
+        this.textMarkupNodes = [];
     }
 
     Template.prototype.init = function () {
@@ -19,6 +20,10 @@
                         this.markups.push([ node, markupLinked ]);
                     }
                 }
+            }
+
+            if (node.isTextNode()) {
+                this.textMarkupNodes.push(node);
             }
         }
 
@@ -35,18 +40,39 @@
             var callback = bindedObject.callback();
             var linkRestrict = callback.restrict;
             var linkFn = callback.link;
+            var transclude = callback.transclude;
 
             if (hasRestrict(linkRestrict, 'E')) {
                 w.compiler.compile(Lite(callback.template))(scope);
+
+                if (!transclude) {
+                    node.cleanInnerHTML();
+                }
+
                 node.append(callback.template);
             }
 
             linkFn(scope, node.attributes(), node);
         }
+
+        return this;
+    };
+
+    var hasText = function (node) {
+        return /\{\{|\}\}/.test(node.text());
     };
 
     Template.prototype.activateByScope = function (scope) {
-        //TODO: Dirty checker and activate scope again and again.
+        var textMarkups = this.textMarkupNodes.filter(hasText);
+
+        for (var i = 0, l = textMarkups.length; i < l; i++) {
+            var node = textMarkups[i];
+            var matchedWithScope = matchTextMarkup(node, scope);
+
+            node.text(matchedWithScope)
+        }
+
+        return this;
     };
 
     /*
@@ -69,6 +95,45 @@
         return has;
     }
 
+    function matchTextMarkup (node, scope) {
+        var text = node.text();
+        var startRemember = false;
+        var frame = '';
+        var frames = '';
+
+        for (var i = 0, l = text.length; i < l; i += 1) {
+            if (startRemember) {
+                frame += text[i];
+
+                if (text[i + 1] + text[i + 2] == '}}') {
+                    frames += scope[trim(frame)];
+
+                    startRemember = false;
+                    frame = '';
+                    i = i + 2;
+                }
+
+                continue;
+            }
+
+            if (text[i] + text[i + 1] == '{{') {
+                startRemember = true;
+                i = i + 1;
+
+                continue;
+            }
+
+            frames += text[i];
+        }
+
+        return frames;
+    }
+
+
+    function trim (string) {
+        return string.replace(/^\s+/, '').replace(/\s+$/, '');
+    }
+
     /*
      * @name Compiler
      * @param provider {EnvironmentForCompiler}
@@ -85,7 +150,9 @@
         var _template = this.templatize(new Lite(element));
 
         return function(scope) {
-            _template.extractMark(scope);
+            _template
+                .extractMark(scope)
+                .activateByScope(scope);
         };
     };
 
@@ -146,4 +213,8 @@ provider.add('directive', 'markUp', function () {
 });
 
 var $scope = new scope();
+$scope.exampleWord = 'I am example word.';
+$scope.sayHi = 'Hi, everyone.';
+$scope.whoareyou = 'My name is vanpipy';
+
 compiler.compile(document.getElementById('main'))($scope);

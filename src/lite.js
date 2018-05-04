@@ -35,12 +35,11 @@
 
     LiteNode.prototype.attr = function (key, value) {
         if (LA.isDefined(key)) {
-
             if (LA.isDefined(value)) {
-                return this.node.setAttribute(key, value);
+                return this[0].setAttribute(key, value);
             }
 
-            return this.node.getAttribute(key);
+            return this[0].getAttribute(key);
         }
     };
 
@@ -71,6 +70,22 @@
             this[0].appendChild(node[0]);
         }
 
+    };
+
+    LiteNode.prototype.cleanInnerHTML = function () {
+        this[0].innerHTML = '';
+    };
+
+    LiteNode.prototype.isTextNode = function () {
+        return this[0].nodeType == 3;
+    };
+
+    LiteNode.prototype.text = function (value) {
+        if (LA.isDefined(value)) {
+            this[0].data = value;
+        }
+
+        return this[0].data;
     };
 
     function childNodesIter (nodesArray, result) {
@@ -116,10 +131,6 @@
 
     function isLiteNode(node) {
         return node instanceof LiteNode;
-    }
-
-    function isTextNode (node) {
-        return node.nodeType == 3;
     }
 
     w.Lite = LiteNode;
