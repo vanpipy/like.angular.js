@@ -1,6 +1,8 @@
 'use strict';
 
 (function(w, LA, Provider) {
+    function noop () {}
+
     function Template (LiteNodesArray, provider) {
         this.nodes = LiteNodesArray || [];
         this.provider = provider || [];
@@ -58,18 +60,40 @@
         return this;
     };
 
+    var textExp = /\{\{|\}\}/;
     var hasText = function (node) {
-        return /\{\{|\}\}/.test(node.text());
+        return textExp.test(node.text()) || textExp.test(node._markupText);
     };
 
-    Template.prototype.activateByScope = function (scope) {
-        var textMarkups = this.textMarkupNodes.filter(hasText);
+    Template.prototype.bindToScope = function (scope) {
+        var templateHandler = this;
+        var textMarkups = templateHandler.textMarkupNodes;
 
         for (var i = 0, l = textMarkups.length; i < l; i++) {
-            var node = textMarkups[i];
-            var matchedWithScope = matchTextMarkup(node, scope);
+            var node = textMarkups[i], matchedWithScope;
 
-            node.text(matchedWithScope)
+            if (hasText(node)) {
+                node._markupText = node.text();
+
+                matchTextMarkup(node, scope, templateHandler);
+            }
+        }
+
+        return this;
+    };
+
+    Template.prototype.activateByScope = function (scope, type) {
+        var templateHandler = this;
+        var textMarkups = templateHandler.textMarkupNodes;
+
+        for (var i = 0, l = textMarkups.length; i < l; i++) {
+            var node = textMarkups[i], matchedWithScope;
+
+            if (hasText(node)) {
+                matchedWithScope = matchTextMarkup(node, scope, templateHandler, 'update');
+
+                node.text(matchedWithScope)
+            }
         }
 
         return this;
@@ -95,8 +119,8 @@
         return has;
     }
 
-    function matchTextMarkup (node, scope) {
-        var text = node.text();
+    function matchTextMarkup (node, scope, template, type) {
+        var text = node._markupText;
         var startRemember = false;
         var frame = '';
         var frames = '';
@@ -106,7 +130,14 @@
                 frame += text[i];
 
                 if (text[i + 1] + text[i + 2] == '}}') {
-                    frames += scope[trim(frame)];
+                    frame = trim(frame);
+                    frames += scope[frame];
+
+                    if (type != 'update') {
+                        scope.$watch(frame, function() {
+                            template.activateByScope(scope, 'update');
+                        });
+                    }
 
                     startRemember = false;
                     frame = '';
@@ -152,7 +183,7 @@
         return function(scope) {
             _template
                 .extractMark(scope)
-                .activateByScope(scope);
+                .bindToScope(scope);
         };
     };
 
