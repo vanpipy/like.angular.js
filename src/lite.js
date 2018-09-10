@@ -49,13 +49,15 @@
 
     LiteNode.prototype.attributes = function () {
         return this[0].attributes;
-    };
+    }
 
     var filterName = LA.map(function(a) { return a.name; });
+    LiteNode.prototype.attributesName = function () {
+        return filterName(this[0].attributes || []);
+    };
+
     LiteNode.prototype.getMarks = function () {
-        if (this[0].attributes) {
-            return [this[0].nodeName.toLowerCase()].concat(filterName(this[0].attributes));
-        }
+        return [this[0].nodeName.toLowerCase()].concat(this.attributesName());
     };
 
     LiteNode.prototype.bind = function (eventName, fn) {

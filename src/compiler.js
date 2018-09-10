@@ -189,7 +189,7 @@
 
     Compiler.prototype.templatize = function (LiteNode) {
         var children = LiteNode.childNodes();
-        var template = new Template(children, this.provider);
+        var template = new Template([LiteNode[0]].concat(children), this.provider);
 
         return template.init();
     };
