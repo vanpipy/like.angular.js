@@ -130,7 +130,7 @@
                 frame += text[i];
 
                 if (text[i + 1] + text[i + 2] == '}}') {
-                    frame = trim(frame);
+                    frame = LA.trim(frame);
                     frames += scope[frame];
 
                     if (type != 'update') {
@@ -158,11 +158,6 @@
         }
 
         return frames;
-    }
-
-
-    function trim (string) {
-        return string.replace(/^\s+/, '').replace(/\s+$/, '');
     }
 
     /*

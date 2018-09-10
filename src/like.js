@@ -40,5 +40,28 @@
     Like.compose = compose;
     Like.map = map;
 
+    var FnNameStringMatcher = /([\w]+)(\(.+\))?/;
+
+    Like.extractFnNameString = function (FnNameString) {
+        var result = FnNameStringMatcher.exec(FnNameString) || [];
+        return {
+            name: result[1],
+            params: result[2] ? extractFnParams(result[2]) : [],
+        };
+    };
+
+    Like.trim = trim;
+
+    var matcherBefore = /^[\(\s]+/;
+    var matcherAfter = /[\)\s]+$/;
+
+    function extractFnParams (FnParamsString) {
+        return trim(FnParamsString).split(',').map(trim);
+    }
+
+    function trim (string) {
+        return string.replace(matcherBefore, '').replace(matcherAfter, '');
+    }
+
     w.LA = Like;
 })(window, window._$);
