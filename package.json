@@ -5,8 +5,7 @@
   "main": "none",
   "scripts": {
     "test": "test",
-    "build": "npm run gulp",
-    "gulp": "node --max_old_space_size=4096 node_modules/gulp/bin/gulp.js"
+    "build": "webpack"
   },
   "repository": {
     "type": "git",
@@ -25,5 +24,8 @@
   "dependencies": {
     "compose-parallel": "^1.0.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "webpack": "^4.43.0",
+    "webpack-cli": "^3.3.11"
+  }
 }
