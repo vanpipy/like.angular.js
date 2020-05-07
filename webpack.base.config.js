@@ -1,3 +1,5 @@
+'use strict';
+
 const path = require('path');
 
 module.exports = {
@@ -6,7 +8,7 @@ module.exports = {
     output: {
         path: path.resolve(__dirname, 'dist'),
         filename: 'likeAngularJS.js',
-        libraryTarget: 'umd'
+        libraryTarget: 'umd',
     },
 
     module: {
@@ -24,6 +26,10 @@ module.exports = {
             }
         ]
     },
+
+    plugins: [
+
+    ],
 
     optimization: {
         minimize: false
