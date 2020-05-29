@@ -1,36 +1,42 @@
 {
-  "name": "LikeAngularJS",
-  "version": "0.0.1",
-  "description": "LikeAngularJS",
-  "main": "none",
-  "scripts": {
-    "test": "test",
-    "build": "webpack"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/vanpipy/LikeAngularJS.git"
-  },
-  "keywords": [
-    "like",
-    "angular.js"
-  ],
-  "author": "vanpipy",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/vanpipy/LikeAngularJS/issues"
-  },
-  "homepage": "https://github.com/vanpipy/LikeAngularJS#readme",
-  "dependencies": {
-    "compose-parallel": "^1.0.2"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.9.6",
-    "@babel/plugin-transform-runtime": "^7.9.6",
-    "@babel/preset-env": "^7.9.6",
-    "@babel/runtime": "^7.9.6",
-    "babel-loader": "^8.1.0",
-    "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
-  }
+    "name": "LikeAngularJS",
+    "version": "0.0.1",
+    "description": "LikeAngularJS",
+    "main": "none",
+    "scripts": {
+        "start:dev": "webpack-dev-server --config ./webpack.dev.config.js",
+        "test": "test",
+        "build": "webpack --config ./webpack.prod.config.js"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/vanpipy/LikeAngularJS.git"
+    },
+    "keywords": [
+        "like",
+        "angular.js"
+    ],
+    "author": "vanpipy",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/vanpipy/LikeAngularJS/issues"
+    },
+    "homepage": "https://github.com/vanpipy/LikeAngularJS#readme",
+    "dependencies": {
+        "compose-parallel": "^1.0.2"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.9.6",
+        "@babel/plugin-transform-runtime": "^7.9.6",
+        "@babel/preset-env": "^7.9.6",
+        "@babel/runtime": "^7.9.6",
+        "babel-loader": "^8.1.0",
+        "eslint": "^6.8.0",
+        "eslint-loader": "^4.0.2",
+        "html-webpack-plugin": "^4.3.0",
+        "webpack": "^4.43.0",
+        "webpack-cli": "^3.3.11",
+        "webpack-dev-server": "^3.10.3",
+        "webpack-merge": "^4.2.2"
+    }
 }

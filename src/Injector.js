@@ -4,28 +4,29 @@
  * const injector = new Injector();
  *
  * injector.$inject = [fnA, fnB, ...];
- * injector.invode = function(fnA, fnB, ...) {
+ * injector.invode(function(fnA, fnB, ...) {
  *   ...
  *
  *   fnA();
  *   fnB():
- * }
+ * })
  */
 
-Injector = function() {
-    this.$inject = [];
+function Injector(provider) {
+    this._provider = provider;
 }
 
 Injector.prototype.get = function(key) {
-    return this.$inject[key];
+    return this._provider.get(key);
 }
 
-Injector.prototype.invoke = function() {
-    var argumentsLength = arguments.length;
-    var parameters = arguments.slice(0, argumentsLength.length - 1);
-    var callback = arguments[argumentsLength - 1];
-
-    callback.apply(null, parameters.map(function(param) {
-        return this.get(param);
-    }));
+Injector.prototype.invoke = function(params) {
+    const callback = params.pop();
+    return callback.apply(null, params.map(this.getFunction));
 }
+
+Injector.prototype.getFunction = function(name) {
+    return this.get(name);
+}
+
+export default Injector;

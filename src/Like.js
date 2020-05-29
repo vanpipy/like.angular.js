@@ -1,13 +1,16 @@
 
 'use strict';
 
-function Like() {
+const Like = {};
 
-}
-
-var defineTypeChecker = curry(function(typeString, input) {
+const defineTypeChecker = curry(function(typeString, input) {
     return Object.prototype.toString.call(input) == '[object '+ typeString +']';
 });
+
+const FnNameStringMatcher = /([\w]+)(\(.+\))?/;
+
+const matcherBefore = /^[(\s]+/;
+const matcherAfter = /[)\s]+$/;
 
 Like.isString = defineTypeChecker('String');
 Like.isFunction = defineTypeChecker('Function');
@@ -21,16 +24,8 @@ Like.isDefined = function (input) {
 
 Like.providers = [];
 
-Like.providerPrefix = {
-    directive: 'D_',
-    controller: 'C_',
-    service: 'S_'
-};
-
-var FnNameStringMatcher = /([\w]+)(\(.+\))?/;
-
 Like.extractFnNameString = function (FnNameString) {
-    var result = FnNameStringMatcher.exec(FnNameString) || [];
+    const result = FnNameStringMatcher.exec(FnNameString) || [];
     return {
         name: result[1],
         params: result[2] ? extractFnParams(result[2]) : [],
@@ -39,15 +34,28 @@ Like.extractFnNameString = function (FnNameString) {
 
 Like.trim = trim;
 
-var matcherBefore = /^[\(\s]+/;
-var matcherAfter = /[\)\s]+$/;
-
 function extractFnParams (FnParamsString) {
     return trim(FnParamsString).split(',').map(trim);
 }
 
 function trim (string) {
     return string.replace(matcherBefore, '').replace(matcherAfter, '');
+}
+
+function curry (Fn) {
+    return rebuild(Fn, [], Fn.length);
+}
+
+function rebuild (originalFn, validParams, validParamsLength) {
+    return function () {
+        const params = Array.prototype.slice.call(arguments);
+
+        if (validParamsLength - params.length > 0) {
+            return rebuild(originalFn, validParams.concat(params), validParamsLength - params.length);
+        } else {
+            return originalFn.apply(this, validParams.concat(params));
+        }
+    };
 }
 
 export default Like;
