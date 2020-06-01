@@ -30,3 +30,9 @@
  *
  *compiler.compile(document.getElementById('main'))($scope);
  */
+
+Like.controller('mainController', ['$rootScope', function($rootScope) {
+    console.log('hello world', $rootScope)
+}]);
+
+Like.bootstrap(document.getElementById('main'));

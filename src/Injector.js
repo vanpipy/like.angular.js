@@ -22,7 +22,7 @@ Injector.prototype.get = function(key) {
 
 Injector.prototype.invoke = function(params) {
     const callback = params.pop();
-    return callback.apply(null, params.map(this.getFunction));
+    return callback.apply(null, params.map(this.getFunction.bind(this)));
 }
 
 Injector.prototype.getFunction = function(name) {

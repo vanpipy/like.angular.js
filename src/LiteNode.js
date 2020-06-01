@@ -53,7 +53,7 @@ LiteNode.prototype.attributes = function () {
 const filterName = function(attr) { return attr.name; };
 
 LiteNode.prototype.attributesName = function () {
-    const attributes = this[0].attributes || [];
+    const attributes = Array.prototype.slice.apply(this[0].attributes) || [];
     return attributes.map(filterName);
 };
 

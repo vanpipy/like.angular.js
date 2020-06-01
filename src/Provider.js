@@ -7,10 +7,9 @@ function Provider (providers, prefix) {
     this.providersIndex = [];
 }
 
-Provider.prototype.set = function (name, fn) {
-    const _name = this.getComponentName(name);
-    this.providers.push({ name: _name, callback: fn });
-    this.providersIndex.push(_name);
+Provider.prototype.set = function (name, provider) {
+    this.providersIndex.push(this.getComponentName(name));
+    this.providers.push(provider);
 };
 
 Provider.prototype.get = function (name) {
@@ -22,7 +21,21 @@ Provider.prototype.get = function (name) {
 };
 
 Provider.prototype.getComponentName = function(name) {
-    return `${this.prefix}_${name}`;
+    if (name) {
+        return `${this.prefix}_${camelName(name)}`;
+    }
+
+    return '';
 };
+
+function camelName(name) {
+    const words = name.split('-');
+    const first = words.shift();
+    return words.length ? `${first}${words.map(upperCaseFirstLetter)}` : first;
+}
+
+function upperCaseFirstLetter(string) {
+    return `${string[0].toUpperCase()}${string.slice(1)}`;
+}
 
 export default Provider;
