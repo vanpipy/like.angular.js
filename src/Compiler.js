@@ -3,23 +3,32 @@
 import Like from './Like';
 import Lite from './LiteNode';
 
-function Template ({ LiteNodesArray, provider, compiler }) {
+function Template ({ LiteNodesArray, providers, compiler }) {
     this.nodes = LiteNodesArray || [];
-    this.provider = provider || [];
+    this.providers = providers || [];
     this.markups = [];
     this.textMarkupNodes = [];
     this.compiler = compiler;
 }
 
 Template.prototype.init = function () {
-    for (var i = 0, l = this.nodes.length; i < l; i++) {
-        var node = new Lite(this.nodes[i]);
-        var markups = node.getMarks();
-        var markupLinked;
+    for (let i = 0, l = this.nodes.length; i < l; i++) {
+        let node = new Lite(this.nodes[i]);
+
+        if (node.isTextNode()) {
+            this.textMarkupNodes.push(node);
+            continue;
+        }
+
+        let markup;
+        let markupLinked;
+        let markups = node.getMarks();
 
         if (markups && markups.length) {
             for (var k = 0, len = markups.length; k < len; k++) {
-                markupLinked = this.provider.get(markups[k]);
+                markup = markups[k];
+
+                markupLinked = this.providers.directive.get(markup);
 
                 if (markupLinked) {
                     this.markups.push([ node, markupLinked ]);
@@ -27,34 +36,31 @@ Template.prototype.init = function () {
             }
         }
 
-        if (node.isTextNode()) {
-            this.textMarkupNodes.push(node);
-        }
     }
 
     return this;
 };
 
 Template.prototype.extractMark = function (scope) {
-    var markups = this.markups;
+    let markups = this.markups;
 
-    for (var i = 0, l = markups.length; i < l; i++) {
-        var node = markups[i][0];
-        var bindedObject = markups[i][1];
+    for (let i = 0, l = markups.length; i < l; i++) {
+        let node = markups[i][0];
+        let bindedCallback = markups[i][1];
 
-        var callback = bindedObject.callback();
-        var linkRestrict = callback.restrict;
-        var linkFn = callback.link;
-        var transclude = callback.transclude;
+        let bindedObject = bindedCallback();
+        let linkRestrict = bindedObject.restrict;
+        let linkFn = bindedObject.link;
+        let transclude = bindedObject.transclude;
 
         if (hasRestrict(linkRestrict, 'E')) {
-            this.compiler.compile(Lite(callback.template))(scope);
+            this.compiler.compile(Lite(bindedObject.template))(scope);
 
             if (!transclude) {
                 node.cleanInnerHTML();
             }
 
-            node.append(callback.template);
+            node.append(bindedObject.template);
         }
 
         linkFn(scope, node.attributes(), node);
@@ -171,8 +177,8 @@ function matchTextMarkup (node, scope, template, type) {
  * The Compiler do things about compile only.
  * Raw element > LiteNode > ScopeBindedNode
  */
-function Compiler (provider) {
-    this.provider = provider;
+function Compiler (providers) {
+    this.providers = providers;
 }
 
 Compiler.prototype.compile = function (element) {
@@ -189,7 +195,7 @@ Compiler.prototype.templatize = function (LiteNode) {
     var children = LiteNode.childNodes();
     var template = new Template({
         LiteNodesArray: [LiteNode[0]].concat(children),
-        provider: this.provider,
+        providers: this.providers,
         compiler: this
     });
 
